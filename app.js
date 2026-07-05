@@ -2,7 +2,7 @@ const APP_ID = "1584024947066184";
 const CONFIG_ID = "1660579938757840";
 
 // TODO: Replace with your Apps Script URL
-const BACKEND_URL = "YOUR_APPS_SCRIPT_URL";
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycbz0g6Ac7gSXoSx6dPoVS8yS6SlS-hdPzfKJ2JlpE3aSpFCCCKnFfVALoc9ZXtc5RQeaQg/exec";
 
 window.fbAsyncInit = function () {
     FB.init({

@@ -82,7 +82,7 @@ document.getElementById("connectBtn").onclick = () => {
         response_type: "code",
         override_default_response_type: true,
         extras: {
-            setup: {},
+            feature: "whatsapp_embedded_signup",
             sessionInfoVersion: "3"
         }
     });

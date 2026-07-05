@@ -75,32 +75,34 @@ function fbLoginCallback(response) {
 
     form.append("code", code);
 
-    fetch(BACKEND_URL, {
+    console.log("FORM code:", code);
 
-        method: "POST",
-        body: form
+    // fetch(BACKEND_URL, {
 
-    })
-    .then(async r => {
+    //     method: "POST",
+    //     body: form
 
-        const text = await r.text();
+    // })
+    // .then(async r => {
 
-        console.log("========== BACKEND ==========");
-        console.log(text);
+    //     const text = await r.text();
 
-        return JSON.parse(text);
+    //     console.log("========== BACKEND ==========");
+    //     console.log(text);
 
-    })
-    .then(data => {
+    //     return JSON.parse(text);
 
-        console.log("========== PARSED ==========");
-        console.log(data);
+    // })
+    // .then(data => {
 
-        document.getElementById("output").textContent =
-            JSON.stringify(data, null, 2);
+    //     console.log("========== PARSED ==========");
+    //     console.log(data);
 
-    })
-    .catch(console.error);
+    //     document.getElementById("output").textContent =
+    //         JSON.stringify(data, null, 2);
+
+    // })
+    // .catch(console.error);
 
 }
 

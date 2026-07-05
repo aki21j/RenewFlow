@@ -14,46 +14,56 @@ window.fbAsyncInit = function () {
         version: "v25.0"
     });
 
+    console.log("================================");
     console.log("Facebook SDK initialized");
+    console.log("================================");
 };
 
-window.addEventListener("message", (event) => {
+window.addEventListener("message", function(event) {
 
-    if (
-        event.origin !== "https://www.facebook.com" &&
-        event.origin !== "https://web.facebook.com"
-    ) {
-        return;
-    }
+    console.log("========== MESSAGE ==========");
+    console.log("Origin:");
+    console.log(event.origin);
+
+    console.log("Raw Data:");
+    console.log(event.data);
 
     try {
 
         const data = JSON.parse(event.data);
 
-        console.log("POST MESSAGE");
+        console.log("Parsed:");
         console.log(data);
 
         if (data.type === "WA_EMBEDDED_SIGNUP") {
+
+            console.log("WA_EMBEDDED_SIGNUP EVENT");
 
             document.getElementById("output").textContent =
                 JSON.stringify(data, null, 2);
 
         }
 
-    } catch (err) {
-        // ignore
+    }
+    catch(err) {
+
+        console.log("Not JSON");
+
     }
 
 });
 
 function fbLoginCallback(response) {
 
-    console.log("===== FB LOGIN RESPONSE =====");
+    console.log("========== FB LOGIN ==========");
     console.log(JSON.stringify(response, null, 2));
 
     if (!response.authResponse) {
+
         alert("Login cancelled");
+
         return;
+
     }
 
     const code = response.authResponse.code;
@@ -62,17 +72,20 @@ function fbLoginCallback(response) {
     console.log(code);
 
     const form = new URLSearchParams();
+
     form.append("code", code);
 
     fetch(BACKEND_URL, {
+
         method: "POST",
         body: form
+
     })
-    .then(async (r) => {
+    .then(async r => {
 
         const text = await r.text();
 
-        console.log("===== BACKEND RESPONSE =====");
+        console.log("========== BACKEND ==========");
         console.log(text);
 
         return JSON.parse(text);
@@ -80,7 +93,7 @@ function fbLoginCallback(response) {
     })
     .then(data => {
 
-        console.log("===== PARSED RESPONSE =====");
+        console.log("========== PARSED ==========");
         console.log(data);
 
         document.getElementById("output").textContent =
@@ -93,25 +106,27 @@ function fbLoginCallback(response) {
 
 document.getElementById("connectBtn").onclick = () => {
 
-    console.log("==================================");
-    console.log("window.location.href");
+    console.log("================================");
+    console.log("Current URL");
     console.log(window.location.href);
 
-    console.log("window.location.origin");
+    console.log("Origin");
     console.log(window.location.origin);
 
-    console.log("window.location.pathname");
+    console.log("Path");
     console.log(window.location.pathname);
-
-    console.log("==================================");
+    console.log("================================");
 
     FB.login(fbLoginCallback, {
+
         config_id: CONFIG_ID,
         response_type: "code",
         override_default_response_type: true,
+
         extras: {
-            setup: {}
+            sessionInfoVersion: "3"
         }
+
     });
 
 };

@@ -82,6 +82,7 @@ document.getElementById("connectBtn").onclick = () => {
         response_type: "code",
         override_default_response_type: true,
         extras: {
+            setup: {},
             sessionInfoVersion: "3"
         }
     });

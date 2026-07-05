@@ -1,77 +1,50 @@
 const APP_ID = "1584024947066184";
-// const CONFIG_ID = "1660579938757840";
-const CONFIG_ID = "36810299058616564";
+// CRITICAL: Use the Configuration ID of your "General Login / User access token" config here!
+const CONFIG_ID = "36810299058616564"; 
+const REDIRECT_URI = "https://aki21j.github.io/RenewFlow/";
 const BACKEND_URL = "https://script.google.com/macros/s/AKfycbz0g6Ac7gSXoSx6dPoVS8yS6SlS-hdPzfKJ2JlpE3aSpFCCCKnFfVALoc9ZXtc5RQeaQg/exec";
 
-window.fbAsyncInit = function () {
-    FB.init({
-        appId: APP_ID,
-        autoLogAppEvents: true,
-        cookie: true,
-        xfbml: true,
-        version: "v25.0"
-    });
-    console.log("Facebook SDK initialized-----!!!!!!!!!!!!!");
-};
-
-// This listener handles the data from the Embedded Signup popup
-window.addEventListener("message", function(event) {
-    // 1. Only accept messages from trusted Meta domains
-    if (!event.origin.includes("facebook.com")) return;
-
-    // 2. The data is a URL-encoded string, not JSON
-    if (typeof event.data !== 'string') return;
-
-    console.log("Raw Message Data:", event.data);
-
-    // 3. Use URLSearchParams to extract the code from the query string
-    const params = new URLSearchParams(event.data);
-    const code = params.get("code");
-
+// 1. Check if the URL contains an OAuth code on page load
+window.onload = function() {
+    console.log("WINDOW LOADED-----!!!!!!!!!");
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
     console.log("CODE:", code);
 
     if (code) {
-        console.log("Extracted Code successfully:", code);
+        console.log("Found OAuth Code in URL:", code);
+        document.getElementById("output").textContent = "Exchanging code with backend...";
 
-        // 4. Send to backend
+        const form = new URLSearchParams();
+        form.append("code", code);
+
+        // Send code to Google Apps Script
         fetch(BACKEND_URL, {
             method: "POST",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ code: code })
+            body: form
         })
         .then(r => r.json())
-        .then(result => {
-            console.log("Backend Success:", result);
-            document.getElementById("output").textContent = JSON.stringify(result, null, 2);
+        .then(data => {
+            console.log("Backend Response:", data);
+            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
         })
         .catch(err => {
-            console.error("Backend Error:", err);
-            document.getElementById("output").textContent = "Backend Error: " + err;
+            console.error("Fetch Error:", err);
+            document.getElementById("output").textContent = "Error: " + err;
         });
-    } else {
-        console.log("Message received but no code found in params.");
     }
-});
+};
 
-// Empty callback - the real work is done in the message listener
-function fbLoginCallback(response) {
-    console.log("FB Login state updated:", response.status);
-}
-
+// 2. Trigger a clean web redirect instead of using unstable popups
 document.getElementById("connectBtn").onclick = () => {
-    // Use FB.ui instead of FB.login
-    FB.ui({
-        display: 'popup',
-        method: 'whatsapp_embedded_signup',
-        config_id: CONFIG_ID,
-        callback: (response) => {
-            console.log("Embedded Signup Response:", response);
-            if (response.status === 'success') {
-                console.log("Success! Auth code:", response.code);
-                // NOW you can take this response.code and send it to your backend
-            } else {
-                console.error("Signup failed:", response);
-            }
-        }
-    });
+    console.log("CONNECT BTN CLICKED-----!!!!!!!!!");
+    const oauthUrl = `https://www.facebook.com/v25.0/dialog/oauth?` +
+                     `client_id=${APP_ID}` +
+                     `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
+                     `&config_id=${CONFIG_ID}` +
+                     `&response_type=code` +
+                     `&scope=whatsapp_business_management,whatsapp_business_messaging`;
+    
+    console.log("Redirecting to Meta OAuth...");
+    window.location.href = oauthUrl;
 };

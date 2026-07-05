@@ -54,10 +54,26 @@ function fbLoginCallback(response) {
 
     console.log("Authorization Code:", code);
 
-    document.getElementById("output").textContent =
-        "Authorization Code:\n\n" + code;
-
     // We'll send this code to Apps Script in the next step.
+    fetch(BACKEND_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            code
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+    
+        console.log(data);
+    
+        document.getElementById("output").textContent =
+            JSON.stringify(data, null, 2);
+    
+    })
+    .catch(console.error);
 }
 
 document.getElementById("connectBtn").onclick = () => {

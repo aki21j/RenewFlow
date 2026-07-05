@@ -15,7 +15,7 @@ window.fbAsyncInit = function () {
     });
 
     console.log("================================");
-    console.log("Facebook SDK initialized");
+    console.log("Facebook SDK initialized!!!!");
     console.log("================================");
 };
 
@@ -77,32 +77,32 @@ function fbLoginCallback(response) {
 
     console.log("FORM code:", code);
 
-    // fetch(BACKEND_URL, {
+    fetch(BACKEND_URL, {
 
-    //     method: "POST",
-    //     body: form
+        method: "POST",
+        body: form
 
-    // })
-    // .then(async r => {
+    })
+    .then(async r => {
 
-    //     const text = await r.text();
+        const text = await r.text();
 
-    //     console.log("========== BACKEND ==========");
-    //     console.log(text);
+        console.log("========== BACKEND ==========");
+        console.log(text);
 
-    //     return JSON.parse(text);
+        return JSON.parse(text);
 
-    // })
-    // .then(data => {
+    })
+    .then(data => {
 
-    //     console.log("========== PARSED ==========");
-    //     console.log(data);
+        console.log("========== PARSED ==========");
+        console.log(data);
 
-    //     document.getElementById("output").textContent =
-    //         JSON.stringify(data, null, 2);
+        document.getElementById("output").textContent =
+            JSON.stringify(data, null, 2);
 
-    // })
-    // .catch(console.error);
+    })
+    .catch(console.error);
 
 }
 
@@ -120,15 +120,11 @@ document.getElementById("connectBtn").onclick = () => {
     console.log("================================");
 
     FB.login(fbLoginCallback, {
-
         config_id: CONFIG_ID,
         response_type: "code",
         override_default_response_type: true,
-
-        extras: {
-            sessionInfoVersion: "3"
-        }
-
+        redirect_uri: "https://aki21j.github.io/RenewFlow", // Explicitly set it here
+        extras: { sessionInfoVersion: "3" }
     });
 
 };

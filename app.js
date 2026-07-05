@@ -55,16 +55,20 @@ function fbLoginCallback(response) {
     console.log("Authorization Code:", code);
 
     // We'll send this code to Apps Script in the next step.
+    const form = new URLSearchParams();
+    form.append("code", code);
+    
     fetch(BACKEND_URL, {
         method: "POST",
-        body: new URLSearchParams({
-            code: code
-        })
+        body: form
     })
-    .then(r => r.json())
+    .then(async (r) => {
+        const text = await r.text();
+        console.log("Raw response:", text);
+        return JSON.parse(text);
+    })
     .then(data => {
         console.log(data);
-    
         document.getElementById("output").textContent =
             JSON.stringify(data, null, 2);
     })

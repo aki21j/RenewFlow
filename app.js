@@ -15,43 +15,40 @@ window.fbAsyncInit = function () {
 
 // This listener handles the data from the Embedded Signup popup
 window.addEventListener("message", function(event) {
-    // Only accept messages from trusted Meta domains
+    // 1. Only accept messages from trusted Meta domains
     if (!event.origin.includes("facebook.com")) return;
-    console.log("MESSAGE RECEIVED:", event);
-    console.log("DATA:", event.data);
 
-    try {
-        const data = (typeof event.data === 'string') ? JSON.parse(event.data) : event.data;
+    // 2. The data is a URL-encoded string, not JSON
+    if (typeof event.data !== 'string') return;
 
-        if (data.type === "WA_EMBEDDED_SIGNUP") {
-            console.log("WA_EMBEDDED_SIGNUP received:", data);
+    console.log("Raw Message Data:", event.data);
 
-            // Display raw data for debugging
-            document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    // 3. Use URLSearchParams to extract the code from the query string
+    const params = new URLSearchParams(event.data);
+    const code = params.get("code");
 
-            // Trigger the backend exchange here
-            if (data.code) {
-                const form = new URLSearchParams();
-                form.append("code", data.code);
+    console.log("CODE:", code);
 
-                fetch(BACKEND_URL, {
-                    method: "POST",
-                    body: form
-                })
-                .then(r => r.json())
-                .then(result => {
-                    console.log("Backend Success:", result);
-                    document.getElementById("output").textContent = "Success!\n" + JSON.stringify(result, null, 2);
-                })
-                .catch(err => {
-                    console.error("Backend Error:", err);
-                    document.getElementById("output").textContent = "Backend Error: " + err;
-                });
-            }
-        }
-    }
-    catch(err) {
-        console.log("Ignored non-JSON message");
+    if (code) {
+        console.log("Extracted Code successfully:", code);
+
+        // 4. Send to backend
+        fetch(BACKEND_URL, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ code: code })
+        })
+        .then(r => r.json())
+        .then(result => {
+            console.log("Backend Success:", result);
+            document.getElementById("output").textContent = JSON.stringify(result, null, 2);
+        })
+        .catch(err => {
+            console.error("Backend Error:", err);
+            document.getElementById("output").textContent = "Backend Error: " + err;
+        });
+    } else {
+        console.log("Message received but no code found in params.");
     }
 });
 

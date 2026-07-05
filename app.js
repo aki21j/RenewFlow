@@ -123,7 +123,7 @@ document.getElementById("connectBtn").onclick = () => {
         config_id: CONFIG_ID,
         response_type: "code",
         override_default_response_type: true,
-        redirect_uri: "https://aki21j.github.io/RenewFlow", // Explicitly set it here
+        redirect_uri: "https://aki21j.github.io/RenewFlow/", // Explicitly set it here
         extras: { sessionInfoVersion: "3" }
     });
 

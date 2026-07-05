@@ -58,12 +58,21 @@ function fbLoginCallback(response) {
 }
 
 document.getElementById("connectBtn").onclick = () => {
-    FB.login(fbLoginCallback, {
+    // Use FB.ui instead of FB.login
+    FB.ui({
+        display: 'popup',
+        method: 'whatsapp_embedded_signup',
         config_id: CONFIG_ID,
-        response_type: "code",
-        override_default_response_type: true,
-        extras: {
-            sessionInfoVersion: "3"
+        callback: (response) => {
+            console.log("Embedded Signup Response:", response);
+            if (response.status === 'success') {
+                // The signup was successful. 
+                // You do NOT need to exchange a code for a token manually.
+                // Meta handles the linkage on their backend.
+                document.getElementById("output").textContent = "Successfully connected! Phone number ID: " + response.phone_number_id;
+            } else {
+                console.log("Signup failed or cancelled:", response);
+            }
         }
     });
 };

@@ -1,5 +1,6 @@
 const APP_ID = "1584024947066184";
-const CONFIG_ID = "1660579938757840";
+// const CONFIG_ID = "1660579938757840";
+const CONFIG_ID = "36810299058616564";
 const BACKEND_URL = "https://script.google.com/macros/s/AKfycbz0g6Ac7gSXoSx6dPoVS8yS6SlS-hdPzfKJ2JlpE3aSpFCCCKnFfVALoc9ZXtc5RQeaQg/exec";
 
 window.fbAsyncInit = function () {
@@ -10,7 +11,7 @@ window.fbAsyncInit = function () {
         xfbml: true,
         version: "v25.0"
     });
-    console.log("Facebook SDK initialized-----!!!!");
+    console.log("Facebook SDK initialized-----!!!!!!!!!!!!!");
 };
 
 // This listener handles the data from the Embedded Signup popup
@@ -66,12 +67,10 @@ document.getElementById("connectBtn").onclick = () => {
         callback: (response) => {
             console.log("Embedded Signup Response:", response);
             if (response.status === 'success') {
-                // The signup was successful. 
-                // You do NOT need to exchange a code for a token manually.
-                // Meta handles the linkage on their backend.
-                document.getElementById("output").textContent = "Successfully connected! Phone number ID: " + response.phone_number_id;
+                console.log("Success! Auth code:", response.code);
+                // NOW you can take this response.code and send it to your backend
             } else {
-                console.log("Signup failed or cancelled:", response);
+                console.error("Signup failed:", response);
             }
         }
     });

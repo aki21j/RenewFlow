@@ -22,11 +22,10 @@ window.fbAsyncInit = function () {
 window.addEventListener("message", function(event) {
 
     console.log("========== MESSAGE ==========");
-    console.log("Origin:");
-    console.log(event.origin);
+    console.log("Origin:", event.origin);
 
-    console.log("Raw Data:");
-    console.log(event.data);
+    // console.log("Raw Data:");
+    // console.log(event.data);
 
     try {
 
@@ -123,8 +122,10 @@ document.getElementById("connectBtn").onclick = () => {
         config_id: CONFIG_ID,
         response_type: "code",
         override_default_response_type: true,
-        redirect_uri: "https://aki21j.github.io/RenewFlow/", // Explicitly set it here
-        extras: { sessionInfoVersion: "3" }
+        // REMOVE THE redirect_uri LINE HERE
+        extras: {
+            sessionInfoVersion: "3"
+        }
     });
 
 };

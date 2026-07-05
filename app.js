@@ -4,9 +4,8 @@ const CONFIG_ID = "36810299058616564";
 const REDIRECT_URI = "https://aki21j.github.io/RenewFlow/";
 const BACKEND_URL = "https://script.google.com/macros/s/AKfycbz0g6Ac7gSXoSx6dPoVS8yS6SlS-hdPzfKJ2JlpE3aSpFCCCKnFfVALoc9ZXtc5RQeaQg/exec";
 
-// 1. Check if the URL contains an OAuth code on page load
 window.onload = function() {
-    console.log("WINDOW LOADED-----!!!!!!!!!");
+    console.log("WINDOW LOADED-----!!!!!!!!!-----");
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     console.log("CODE:", code);
@@ -15,13 +14,13 @@ window.onload = function() {
         console.log("Found OAuth Code in URL:", code);
         document.getElementById("output").textContent = "Exchanging code with backend...";
 
-        const form = new URLSearchParams();
-        form.append("code", code);
+        // Append the token code directly into the URL query parameters
+        const finalUrl = `${BACKEND_URL}?code=${encodeURIComponent(code)}`;
 
-        // Send code to Google Apps Script
-        fetch(BACKEND_URL, {
-            method: "POST",
-            body: form
+        console.log("FINAL URL:", finalUrl);
+        // Switch execution to a clean GET request to bypass browser CORS pre-flights
+        fetch(finalUrl, {
+            method: "GET"
         })
         .then(r => r.json())
         .then(data => {
@@ -35,9 +34,7 @@ window.onload = function() {
     }
 };
 
-// 2. Trigger a clean web redirect instead of using unstable popups
 document.getElementById("connectBtn").onclick = () => {
-    console.log("CONNECT BTN CLICKED-----!!!!!!!!!");
     const oauthUrl = `https://www.facebook.com/v25.0/dialog/oauth?` +
                      `client_id=${APP_ID}` +
                      `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +

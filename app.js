@@ -57,21 +57,16 @@ function fbLoginCallback(response) {
     // We'll send this code to Apps Script in the next step.
     fetch(BACKEND_URL, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            code
+        body: new URLSearchParams({
+            code: code
         })
     })
     .then(r => r.json())
     .then(data => {
-    
         console.log(data);
     
         document.getElementById("output").textContent =
             JSON.stringify(data, null, 2);
-    
     })
     .catch(console.error);
 }

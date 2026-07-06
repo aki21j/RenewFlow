@@ -39,7 +39,8 @@ window.onload = function() {
 };
 
 document.getElementById("connectBtn").onclick = () => {
-    const oauthUrl = `https://www.facebook.com/v25.0/dialog/oauth?` +
+    // Crucial: Use business_oauth instead of dialog/oauth to force the System User configuration context
+    const oauthUrl = `https://www.facebook.com/v25.0/dialog/business_oauth?` +
                      `client_id=${APP_ID}` +
                      `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
                      `&config_id=${CONFIG_ID}` +

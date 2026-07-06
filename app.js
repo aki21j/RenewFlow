@@ -39,13 +39,14 @@ window.onload = function() {
 };
 
 document.getElementById("connectBtn").onclick = () => {
-    // Crucial: Use business_oauth instead of dialog/oauth to force the System User configuration context
-    const oauthUrl = `https://www.facebook.com/v25.0/dialog/business_oauth?` +
+    // Correct route: /v25.0/dialog/page_as_business_oauth or /dialog/business_oauth directly on facebook.com
+    const oauthUrl = `https://www.facebook.com/dialog/business_oauth?` +
                      `client_id=${APP_ID}` +
                      `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
                      `&config_id=${CONFIG_ID}` +
                      `&response_type=code` +
                      `&scope=whatsapp_business_management,whatsapp_business_messaging`;
     
+    console.log("Redirecting to system-user context via business oauth...");
     window.location.href = oauthUrl;
 };

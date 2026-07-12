@@ -5,7 +5,7 @@ const REDIRECT_URI =
     "https://aki21j.github.io/RenewFlow/";
 
 const BACKEND_URL =
-    "https://script.google.com/macros/s/AKfycbxQKP4F-pWWrccsbSYaUNkkkdMgRVveORRqQb07mtSLnxxByD7b4Jjz8VT5qRPj8tRrwA/exec";
+    "https://script.google.com/macros/s/AKfycbw5NQr_hbzx4qOAy-0GCfIelQkNWZzdv3OB6unlvAh8rFN6euLNkgST4Y1aDgIeBPth6w/exec";
 
 window.handleBackendResponse = function (data) {
 

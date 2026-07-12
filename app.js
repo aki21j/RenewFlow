@@ -2,7 +2,7 @@ const APP_ID = "1584024947066184";
 // CRITICAL: Use the Configuration ID of your "General Login / User access token" config here!
 const CONFIG_ID = "36810299058616564"; 
 const REDIRECT_URI = "https://aki21j.github.io/RenewFlow/";
-const BACKEND_URL = "https://script.google.com/macros/s/AKfycbxHMIkhKUvrPhseurskChZ41o-mEGp9MYFJMA_nC0ZdDCmKhl66mFfrx5jC0fzcBWj9UQ/exec";
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwGPR4BTbIl1VBc0IUIAAX9rVFVFcXj-uxgooY0O0RZHeW95yPbGpAn_6qyNHB-mzmm/exec";
 
 // 1. Define the Global JSONP Callback Handler
 window.handleBackendResponse = function(data) {

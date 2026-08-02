@@ -1,57 +1,124 @@
 const APP_ID = "1584024947066184";
 const CONFIG_ID = "36810299058616564";
 
-const REDIRECT_URI =
-    "https://aki21j.github.io/RenewFlow/";
-
 const BACKEND_URL =
     "https://script.google.com/macros/s/AKfycbw8GR6kA3q60ZcSTkm-23mzE1GdfoocJoyU9FB3EBghmCNtGfwWByC5sQOOqwe7Mhqk_g/exec";
 
+/* ---------------------------------------------------------- */
+/* Facebook SDK                                                */
+/* ---------------------------------------------------------- */
+
+window.fbAsyncInit = function () {
+
+    FB.init({
+        appId: APP_ID,
+        cookie: true,
+        xfbml: false,
+        version: "v25.0"
+    });
+
+    console.log("✅ Facebook SDK Initialised");
+
+};
+
+/* ---------------------------------------------------------- */
+/* Embedded Signup Events                                      */
+/* ---------------------------------------------------------- */
+
+window.addEventListener("message", (event) => {
+
+    console.log("======================================");
+    console.log("POST MESSAGE");
+    console.log("Origin:", event.origin);
+    console.log("Raw Event:", event.data);
+
+    if (
+        event.origin !== "https://www.facebook.com" &&
+        event.origin !== "https://web.facebook.com"
+    ) {
+        return;
+    }
+
+    try {
+
+        const data =
+            typeof event.data === "string"
+                ? JSON.parse(event.data)
+                : event.data;
+
+        console.log("Parsed Event:");
+        console.log(data);
+
+    } catch (err) {
+
+        console.log("Non JSON message.");
+
+    }
+
+});
+
+/* ---------------------------------------------------------- */
+/* Backend Callback                                            */
+/* ---------------------------------------------------------- */
+
 window.handleBackendResponse = function (data) {
 
-    console.log("========== BACKEND RESPONSE ==========");
+    console.log("======================================");
+    console.log("BACKEND RESPONSE");
     console.log(data);
 
     document.getElementById("output").textContent =
         JSON.stringify(data, null, 2);
 
-    // Remove OAuth code from URL
     window.history.replaceState(
         {},
         document.title,
         window.location.pathname
     );
 
-    // Remove JSONP script
-    const script = document.getElementById("jsonp-script");
+    const script =
+        document.getElementById("jsonp-script");
 
     if (script) {
+
         script.remove();
+
     }
 
-    console.log("✅ RenewFlow onboarding completed.");
+    console.log("✅ Backend Finished");
 
 };
 
+/* ---------------------------------------------------------- */
+/* Handle Redirect                                              */
+/* ---------------------------------------------------------- */
+
 window.addEventListener("load", () => {
 
-    console.log("RenewFlow loaded.");
+    console.log("======================================");
+    console.log("RenewFlow Loaded");
 
-    const params = new URLSearchParams(window.location.search);
+    const params =
+        new URLSearchParams(window.location.search);
 
-    const code = params.get("code");
+    const code =
+        params.get("code");
 
     if (!code) {
-        console.log("Waiting for user authentication...");
+
+        console.log("No OAuth code present.");
         return;
+
     }
 
-    console.log("Received OAuth code.");
+    console.log("OAuth Code Found");
+    console.log(code);
 
     document.getElementById("output").textContent =
-        "Connecting to WhatsApp...";
+        "Exchanging authorization code...";
 
-    const script = document.createElement("script");
+    const script =
+        document.createElement("script");
 
     script.id = "jsonp-script";
 
@@ -60,10 +127,7 @@ window.addEventListener("load", () => {
 
     script.onerror = () => {
 
-        console.error("Backend request failed.");
-
-        document.getElementById("output").textContent =
-            "Unable to reach backend.";
+        console.error("Apps Script failed.");
 
     };
 
@@ -71,20 +135,59 @@ window.addEventListener("load", () => {
 
 });
 
+/* ---------------------------------------------------------- */
+/* Launch Embedded Signup                                      */
+/* ---------------------------------------------------------- */
+
 document
     .getElementById("connectBtn")
     .addEventListener("click", () => {
 
-        console.log("Opening Meta OAuth...");
+        console.log("======================================");
+        console.log("Launching Embedded Signup");
 
-        const oauthUrl =
-            "https://www.facebook.com/v25.0/dialog/oauth?" +
-            "client_id=" + encodeURIComponent(APP_ID) +
-            "&redirect_uri=" + encodeURIComponent(REDIRECT_URI) +
-            "&config_id=" + encodeURIComponent(CONFIG_ID) +
-            "&response_type=code" +
-            "&scope=whatsapp_business_management,whatsapp_business_messaging";
+        FB.login(
 
-        window.location.href = oauthUrl;
+            function (response) {
+
+                console.log("======================================");
+                console.log("FB.LOGIN CALLBACK");
+                console.log(response);
+
+                if (!response.authResponse) {
+
+                    console.log("User cancelled.");
+
+                    return;
+
+                }
+
+                console.log("Auth Response");
+                console.log(response.authResponse);
+
+            },
+
+            {
+
+                config_id: CONFIG_ID,
+
+                response_type: "code",
+
+                override_default_response_type: true,
+
+                extras: {
+
+                    sessionInfoVersion: 3,
+
+                    featureType:
+                        "whatsapp_business_app_onboarding",
+
+                    setup: {}
+
+                }
+
+            }
+
+        );
 
     });
